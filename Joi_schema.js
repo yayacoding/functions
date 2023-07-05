@@ -50,6 +50,15 @@ const department_login = Joi.object({
   device_type: Joi.string().trim().required(),
   device_token: Joi.string().trim().required()
 });
+const list = {
+  search: Joi.string().trim().default('').allow(''),
+  size: Joi.number().default(env.LIMIT).required(),
+  page: Joi.number().default(env.PAGE).required(),
+  sort: Joi.string().trim().default(env.DEFAULT_SORT_KEY),
+  order: Joi.string().trim().valid(order.ASC, order.DESC).default(order.DESC)
+};
+
+const listValidation = Joi.object({ ...list });
 
 module.exports = {
   login,
