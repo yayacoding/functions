@@ -2,21 +2,24 @@ const axios = require('axios');
 const { env } = require('../constant');
 const { htmlToPdfConvert, generateOtp } = require('./helper');
 const fs = require('fs');
-//https://developers.facebook.com/apps/390008660041292/whatsapp-business/wa-dev-console/?business_id=1020459109066146
-//8960905086
 const path = require('path');
+
+/**
+ * @description function to integration whatsApp
+ * @param {*  contact where to send } to
+ * @param {* template name create on meta account} template
+ * @param {* content to send on whatsApp } components
+ */
 const whatsappMsg = async (to, template, components) => {
   const data = JSON.stringify({
     'messaging_product': 'whatsapp',
     to,
     'type': 'template',
     'template': {
-      //template that you were created an meta account
       'name': template,
       'language': {
         'code': 'en_US'
       },
-      //components that you want to send like body data, header data
       components
     }
   });
@@ -42,8 +45,9 @@ const whatsappMsg = async (to, template, components) => {
       return false;
     });
 };
+
 /**
- *
+ * @description function to send whatsapp message
  * @param {* contact number} to
  * @param {* template that you were created} messageTemplate
  * @param {* template to create pdf } htmlTemplate
@@ -51,13 +55,18 @@ const whatsappMsg = async (to, template, components) => {
  */
 const sendMessage = async (to, messageTemplate, htmlTemplate) => {
   try {
+    // convert html to pdf
     const pdfDAta = await htmlToPdfConvert(htmlTemplate);
 
+    // generate random file name
     const randomName = generateOtp(10);
     const detail = Buffer.from(pdfDAta, 'utf8');
 
+    // write file into a folder
     fs.writeFileSync(`./app/uploads/${randomName}.pdf`, detail);
     const link = path.join(__dirname, `../../uploads/${randomName}.pdf`).split('/app/')[1];
+
+    // content to to sent on whatsapp
     const component = [{
       'type': 'header',
       'parameters': [
