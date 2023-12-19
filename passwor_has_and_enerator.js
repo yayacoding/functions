@@ -26,3 +26,35 @@ exports.generateRandomPass = async () => {
 
   return randomstring;
 };
+
+
+//generate random password new function
+exports.passwordGenerator = async() => {
+  const uChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const lChars = 'abcdefghijklmnopqrstuvwxyz';
+  const nums = '0123456789';
+  const countArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const sChars = '@#';
+  let randomstring = '';
+  let counter = 0;
+  let rN;
+
+  while (randomstring.length < 10) {
+    counter = countArr[Math.floor(Math.random() * countArr.length)];
+    countArr.splice(countArr.indexOf(counter), 1);
+    if (counter >= 0 && counter <= 1) {
+      rN = Math.floor(Math.random() * uChars.length);
+      randomstring += uChars[rN];
+    } else if (counter < 6 && counter > 1) {
+      rN = Math.floor(Math.random() * lChars.length);
+      randomstring += lChars[rN];
+    } else if (counter >= 6 && counter <= 7) {
+      rN = Math.floor(Math.random() * nums.length);
+      randomstring += nums[rN];
+    } else {
+      rN = Math.floor(Math.random() * sChars.length);
+      randomstring += sChars[rN];
+    }
+  }
+  return randomstring;
+};
