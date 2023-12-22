@@ -93,3 +93,45 @@ const htmlToPdfConvert = async (req, res, htmlName, ejsData, dbTrans, index) => 
 
 
 
+/****************************************************Pupeetear*****************************************************/
+
+const puppeteer = require('puppeteer');
+const HandlBars = require('handlebars');
+const fs = require('fs');
+const path = require('path');
+module.exports.htmlToPdfConvert = async (htmlName, ejsData) => {
+  try {
+    // path to read the file
+    const appRoot = __filename.split('/utils');
+    let htmlContent;
+
+    ejs.renderFile(`${appRoot[0]}/views/${htmlName}.ejs`, { data: ejsData }, (err, data) => {
+      if (err) {
+        console.log('error in getting template path', err);
+        return false;
+      }
+      htmlContent = data;
+    });
+
+    const browser = await puppeteer.launch({
+      // executablePath: '/usr/bin/chromium-browser',
+      executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+      headless: 'new'
+    });
+
+    const page = await browser.newPage();
+    await page.setContent(htmlContent);
+    const buffer = await page.pdf({
+      format: 'A4',
+      height: '15in',
+      width: '20in'
+    });
+
+    await browser.close();
+    return buffer;
+  } catch (err) {
+    return err;
+  }
+};
+
+
